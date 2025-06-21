@@ -1,7 +1,8 @@
-import React, { useState, useRef } from 'react';
-import { View, StyleSheet, ScrollView, Dimensions, TouchableOpacity } from 'react-native';
+import React, { useState, useRef, useEffect } from 'react';
+import { View, StyleSheet, ScrollView, Dimensions, TouchableOpacity, Animated } from 'react-native';
 import PromoBanner from './PromoBanner';
 import { MegaphoneIcon, DiscountIcon, DeliveryIcon, CalendarIcon } from './IconAssets';
+import Svg, { Path } from 'react-native-svg';
 
 // Sample data for banners
 const bannerData = [
@@ -9,88 +10,162 @@ const bannerData = [
     id: '1',
     title: 'Check lowest prices',
     subtitle: 'in the store',
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#F4F4F4',
     icon: <MegaphoneIcon />,
   },
   {
     id: '2',
     title: 'Get 20% off',
     subtitle: 'on first order',
-    backgroundColor: '#E6F7FF',
+    backgroundColor: '#F4F4F4',
     icon: <DiscountIcon />,
   },
   {
     id: '3',
     title: 'Free delivery',
     subtitle: 'on orders above ₹500',
-    backgroundColor: '#FFECDB',
+    backgroundColor: '#F4F4F4',
     icon: <DeliveryIcon />,
   },
   {
     id: '4',
     title: 'Daily deals',
     subtitle: 'save big everyday',
-    backgroundColor: '#E8F5E9',
+    backgroundColor: '#F4F4F4',
     icon: <CalendarIcon />,
   },
 ];
 
 const { width } = Dimensions.get('window');
+const BANNER_WIDTH = width - 40; // Account for horizontal padding
+
+// Arrow components
+const LeftArrow = () => (
+  <View style={styles.arrowContainer}>
+    <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <Path d="M15 18L9 12L15 6" stroke="#FF7A00" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    </Svg>
+  </View>
+);
+
+const RightArrow = () => (
+  <View style={styles.arrowContainer}>
+    <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <Path d="M9 6L15 12L9 18" stroke="#FF7A00" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    </Svg>
+  </View>
+);
 
 const PromoBannerSlider = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const scrollViewRef = useRef<ScrollView>(null);
+  const slideAnimation = useRef(new Animated.Value(0)).current;
+  
+  // Track if we're at the first or last banner
+  const isFirstBanner = activeIndex === 0;
+  const isLastBanner = activeIndex === bannerData.length - 1;
 
   const handleScroll = (event: any) => {
     const contentOffsetX = event.nativeEvent.contentOffset.x;
-    const currentIndex = Math.round(contentOffsetX / width);
+    const currentIndex = Math.round(contentOffsetX / BANNER_WIDTH);
     setActiveIndex(currentIndex);
   };
 
-  const handleDotPress = (index: number) => {
-    scrollViewRef.current?.scrollTo({
-      x: index * width,
-      animated: true,
-    });
-    setActiveIndex(index);
+  const scrollToBanner = (index: number) => {
+    if (scrollViewRef.current) {
+      // Animate the transition
+      Animated.timing(slideAnimation, {
+        toValue: index > activeIndex ? 1 : -1,
+        duration: 150,
+        useNativeDriver: true,
+      }).start(() => {
+        scrollViewRef.current?.scrollTo({ x: index * BANNER_WIDTH, animated: true });
+        setActiveIndex(index);
+        // Reset animation value
+        slideAnimation.setValue(0);
+      });
+    }
+  };
+
+  // Navigate to previous banner
+  const goToPrevious = () => {
+    if (activeIndex > 0) {
+      scrollToBanner(activeIndex - 1);
+    }
+  };
+
+  // Navigate to next banner
+  const goToNext = () => {
+    if (activeIndex < bannerData.length - 1) {
+      scrollToBanner(activeIndex + 1);
+    }
   };
 
   return (
     <View style={styles.container}>
-      <ScrollView
-        ref={scrollViewRef}
-        horizontal
-        pagingEnabled
-        showsHorizontalScrollIndicator={false}
-        onScroll={handleScroll}
-        scrollEventThrottle={16}
-        style={styles.scrollView}
-      >
-        {bannerData.map((banner) => (
-          <View key={banner.id} style={styles.bannerContainer}>
-            <PromoBanner
-              title={banner.title}
-              subtitle={banner.subtitle}
-              backgroundColor={banner.backgroundColor}
-              icon={banner.icon}
-              onPress={() => console.log(`Banner ${banner.id} pressed`)}
-            />
-          </View>
-        ))}
-      </ScrollView>
+      <View style={styles.contentContainer}>
+        <ScrollView
+          ref={scrollViewRef}
+          horizontal
+          pagingEnabled
+          showsHorizontalScrollIndicator={false}
+          onMomentumScrollEnd={handleScroll}
+          style={styles.scrollView}
+          scrollEventThrottle={16}
+          decelerationRate="fast"
+        >
+          {bannerData.map((banner, index) => (
+            <Animated.View 
+              key={banner.id} 
+              style={[
+                styles.bannerContainer,
+                { 
+                  transform: [{
+                    translateX: slideAnimation.interpolate({
+                      inputRange: [-1, 0, 1],
+                      outputRange: [BANNER_WIDTH * 0.05, 0, -BANNER_WIDTH * 0.05]
+                    })
+                  }],
+                  opacity: slideAnimation.interpolate({
+                    inputRange: [-1, 0, 1],
+                    outputRange: [0.8, 1, 0.8]
+                  })
+                }
+              ]}
+            >
+              <PromoBanner
+                title={banner.title}
+                subtitle={banner.subtitle}
+                backgroundColor={banner.backgroundColor}
+                icon={banner.icon}
+                onPress={() => console.log(`Banner ${banner.id} pressed`)}
+              />
+            </Animated.View>
+          ))}
+        </ScrollView>
 
-      {/* Pagination dots */}
-      <View style={styles.pagination}>
-        {bannerData.map((_, index) => (
-          <TouchableOpacity
-            key={index}
-            style={[
-              styles.paginationDot,
-              index === activeIndex && styles.paginationDotActive,
-            ]}
-            onPress={() => handleDotPress(index)}
-          />
-        ))}
+        {/* Navigation arrows */}
+        <View style={styles.arrowsContainer}>
+          {!isFirstBanner && (
+            <TouchableOpacity 
+              style={[styles.arrowButton, styles.leftArrow]} 
+              onPress={goToPrevious}
+              activeOpacity={0.7}
+            >
+              <LeftArrow />
+            </TouchableOpacity>
+          )}
+          
+          {!isLastBanner && (
+            <TouchableOpacity 
+              style={[styles.arrowButton, styles.rightArrow]} 
+              onPress={goToNext}
+              activeOpacity={0.7}
+            >
+              <RightArrow />
+            </TouchableOpacity>
+          )}
+        </View>
       </View>
     </View>
   );
@@ -98,33 +173,60 @@ const PromoBannerSlider = () => {
 
 const styles = StyleSheet.create({
   container: {
-    marginVertical: 20,
+    width: '100%',
+    height: 104,
+    backgroundColor: '#F4F4F4',
+    borderRadius: 12,
+    overflow: 'hidden',
+  },
+  contentContainer: {
+    flex: 1,
+    position: 'relative',
   },
   scrollView: {
     width: '100%',
+    height: '100%',
   },
   bannerContainer: {
-    width: width,
-    paddingHorizontal: 10,
+    width: BANNER_WIDTH,
+    height: 104,
+    justifyContent: 'center',
   },
-  pagination: {
+  arrowsContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
     flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    pointerEvents: 'box-none',
+  },
+  arrowButton: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: 'white',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 3,
   },
-  paginationDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: '#ccc',
-    marginHorizontal: 4,
+  leftArrow: {
+    marginLeft: 10,
   },
-  paginationDotActive: {
-    backgroundColor: '#FF7A00',
-    width: 12,
-    height: 12,
-    borderRadius: 6,
+  rightArrow: {
+    marginRight: 10,
+  },
+  arrowContainer: {
+    width: 24,
+    height: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

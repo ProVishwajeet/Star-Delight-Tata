@@ -1,0 +1,4 @@
+This directory contains placeholder images for customer profile pictures.
+You should replace these with actual customer images when available.
+
+For now, the app will use default profile images from the React Native components.

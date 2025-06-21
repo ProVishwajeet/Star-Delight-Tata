@@ -1,0 +1,7 @@
+<svg width="328" height="56" viewBox="0 0 328 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="328" height="56" fill="#A6D4FA"/>
+  <pattern id="diagonalHatch" patternUnits="userSpaceOnUse" width="10" height="10" patternTransform="rotate(45)">
+    <line x1="0" y1="0" x2="0" y2="10" stroke="#8BC4F5" stroke-width="2"/>
+  </pattern>
+  <rect width="328" height="56" fill="url(#diagonalHatch)"/>
+</svg>

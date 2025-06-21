@@ -1,8 +1,10 @@
-import { View, Text, StyleSheet, SafeAreaView, ScrollView, Image, Animated, Dimensions, ImageBackground } from "react-native";
 import LottieView from 'lottie-react-native';
-import { useRef, useEffect, useState } from 'react';
+import { useEffect, useRef } from 'react';
+import { Animated, Dimensions, FlatList, ImageBackground, SafeAreaView, StyleSheet, Text, View } from "react-native";
+import CustomerReviews from '../components/CustomerReviews';
+import PriceBanner from '../components/PriceBanner';
+import PromotionalBanner from '../components/PromotionalBanner';
 import StarburstBadge from '../components/StarburstBadge';
-import PromoBannerSlider from '../components/PromoBannerSlider';
 
 const { width } = Dimensions.get('window');
 const CARD_WIDTH = 137; // Exact width as requested
@@ -126,81 +128,93 @@ export default function Index() {
 
   return (
     <View style={styles.outerContainer}>
-      <View style={styles.lottieContainer}>
-        <LottieView
-          ref={animationRef}
-          style={styles.lottieAnimation}
-          source={require('../assets/Hero-lottie.json')}
-          autoPlay
-          loop
-          resizeMode="cover"
-        />
-      </View>
       <SafeAreaView style={styles.container}>
-        <View style={styles.contentContainer}>
-          <Text style={styles.welcomeText}>
-            Welcome to Star Delight!
-          </Text>
+        <FlatList
+          style={styles.flatListContainer}
+          contentContainerStyle={styles.contentContainer}
+          showsVerticalScrollIndicator={false}
+          data={[{ key: 'content' }]}
+          renderItem={() => (
+            <View>
+              {/* Lottie animation now inside the scrollable content */}
+              <View style={styles.lottieContainer}>
+                <LottieView
+                  ref={animationRef}
+                  style={styles.lottieAnimation}
+                  source={require('../assets/Hero-lottie.json')}
+                  autoPlay
+                  loop
+                  resizeMode="cover"
+                />
+              </View>
+              <View style={styles.welcomeContainer}>
+                <Text style={styles.welcomeText}>
+                  Welcome to Star Delight!
+                </Text>
+              </View>
           
-          {/* Promo Banner Slider */}
-          <View style={styles.promoBannerContainer}>
-            <PromoBannerSlider />
-          </View>
-          
-          <View style={styles.offersContainer}>
-            <View style={styles.offersHeader}>
-              <Text style={styles.offersSectionTitle}>Star Special Offers</Text>
-              <Text style={styles.viewAllText}>View All</Text>
-            </View>
-            
-            <Animated.ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.scrollViewContent}
-              snapToInterval={CARD_WIDTH + SPACING}
-              decelerationRate="fast"
-              onScroll={Animated.event(
-                [{ nativeEvent: { contentOffset: { x: scrollX } } }],
-                { useNativeDriver: true }
-              )}
-            >
-              {specialOffers.map((item, index) => (
-                <View key={item.id} style={{ width: CARD_WIDTH, marginRight: SPACING }}>
-                  {renderSpecialOfferItem({ item, index })}
+              <View style={styles.offersContainer}>
+                <View style={styles.offersHeader}>
+                  <Text style={styles.offersSectionTitle}>Star Special Offers</Text>
+                  <Text style={styles.viewAllText}>View All</Text>
                 </View>
-              ))}
-            </Animated.ScrollView>
-            
-            <View style={styles.paginationContainer}>
-              {specialOffers.map((_, index) => {
-                const inputRange = [
-                  (index - 1) * (CARD_WIDTH + SPACING),
-                  index * (CARD_WIDTH + SPACING),
-                  (index + 1) * (CARD_WIDTH + SPACING),
-                ];
                 
-                const opacity = scrollX.interpolate({
-                  inputRange,
-                  outputRange: [0.3, 1, 0.3],
-                  extrapolate: 'clamp',
-                });
+                <Animated.ScrollView
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  contentContainerStyle={styles.scrollViewContent}
+                  snapToInterval={CARD_WIDTH + SPACING}
+                  decelerationRate="fast"
+                  onScroll={Animated.event(
+                    [{ nativeEvent: { contentOffset: { x: scrollX } } }],
+                    { useNativeDriver: true }
+                  )}
+                >
+                  {specialOffers.map((item, index) => (
+                    <View key={item.id} style={{ width: CARD_WIDTH, marginRight: SPACING }}>
+                      {renderSpecialOfferItem({ item, index })}
+                    </View>
+                  ))}
+                </Animated.ScrollView>
                 
-                const scale = scrollX.interpolate({
-                  inputRange,
-                  outputRange: [1, 1.3, 1],
-                  extrapolate: 'clamp',
-                });
-                
-                return (
-                  <Animated.View
-                    key={index}
-                    style={[styles.paginationDot, { opacity, transform: [{ scale }] }]}
-                  />
-                );
-              })}
+                <View style={styles.paginationContainer}>
+                  {specialOffers.map((_, index) => {
+                    const inputRange = [
+                      (index - 1) * (CARD_WIDTH + SPACING),
+                      index * (CARD_WIDTH + SPACING),
+                      (index + 1) * (CARD_WIDTH + SPACING),
+                    ];
+                    
+                    const opacity = scrollX.interpolate({
+                      inputRange,
+                      outputRange: [0.3, 1, 0.3],
+                      extrapolate: 'clamp',
+                    });
+                    
+                    const scale = scrollX.interpolate({
+                      inputRange,
+                      outputRange: [1, 1.3, 1],
+                      extrapolate: 'clamp',
+                    });
+                    
+                    return (
+                      <Animated.View
+                        key={index}
+                        style={[styles.paginationDot, { opacity, transform: [{ scale }] }]}
+                      />
+                    );
+                  })}
+                </View>
+              </View>
+              {/* Price Banner */}
+              <PriceBanner />
+              {/* Promotional Banner */}
+              <PromotionalBanner />
+              {/* Customer Reviews Section */}
+              <CustomerReviews />
             </View>
-          </View>
-        </View>
+          )}
+        />
       </SafeAreaView>
     </View>
   );
@@ -215,14 +229,15 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     width: '100%',
+    backgroundColor: '#fff',
+  },
+  flatListContainer: {
+    flex: 1,
+    width: '100%',
   },
   lottieContainer: {
     width: '100%',
     height: 370,
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
     overflow: 'hidden',
   },
   lottieAnimation: {
@@ -230,15 +245,18 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   contentContainer: {
-    flex: 1,
+    paddingBottom: 40, // Add padding at the bottom for better scrolling experience
+  },
+  welcomeContainer: {
+    width: '100%',
     alignItems: 'center',
-    paddingTop: 380, // Add padding to position content below the Lottie animation
+    paddingHorizontal: 20,
+    marginBottom: 20,
   },
   welcomeText: {
     color: '#3b82f6', // blue-500 in Tailwind
     fontWeight: 'bold',
     fontSize: 24,
-    marginBottom: 20,
   },
   offersContainer: {
     width: '100%',
@@ -318,6 +336,7 @@ const styles = StyleSheet.create({
   promoBannerContainer: {
     width: '100%',
     paddingHorizontal: 20,
-    marginBottom: 20,
+    marginTop: 20,
+    marginBottom: 30,
   },
 });
