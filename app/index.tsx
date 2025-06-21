@@ -1,10 +1,16 @@
 import LottieView from 'lottie-react-native';
 import { useEffect, useRef } from 'react';
-import { Animated, Dimensions, FlatList, ImageBackground, SafeAreaView, StyleSheet, Text, View } from "react-native";
+import { Dimensions, FlatList, ImageBackground, StyleSheet, View } from "react-native";
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import BottomNavBar from '../components/BottomNavBar';
+import ChatWithUsButton from '../components/ChatWithUsButton';
 import CustomerReviews from '../components/CustomerReviews';
+import GreetingDisplay from '../components/GreetingDisplay';
+import TopNavBar from '../components/TopNavBar';
+import Offers_carousel from '../components/Offers_carousel';
 import PriceBanner from '../components/PriceBanner';
 import PromotionalBanner from '../components/PromotionalBanner';
-import StarburstBadge from '../components/StarburstBadge';
+import SpecialOffers from '../components/SpecialOffers';
 
 const { width } = Dimensions.get('window');
 const CARD_WIDTH = 137; // Exact width as requested
@@ -66,7 +72,6 @@ const specialOffers: OfferItem[] = [
 
 export default function Index() {
   const animationRef = useRef<LottieView>(null);
-  const scrollX = useRef(new Animated.Value(0)).current;
   
   useEffect(() => {
     // Play the animation when component mounts
@@ -75,148 +80,65 @@ export default function Index() {
     }
   }, []);
 
-  const renderSpecialOfferItem = ({ item, index }: { item: OfferItem, index: number }) => {
-    const inputRange = [
-      (index - 1) * (CARD_WIDTH + SPACING),
-      index * (CARD_WIDTH + SPACING),
-      (index + 1) * (CARD_WIDTH + SPACING),
-    ];
-
-    const scale = scrollX.interpolate({
-      inputRange,
-      outputRange: [0.95, 1, 0.95],
-      extrapolate: 'clamp',
-    });
-
-    const opacity = scrollX.interpolate({
-      inputRange,
-      outputRange: [0.8, 1, 0.8],
-      extrapolate: 'clamp',
-    });
-
-    return (
-      <Animated.View 
-        style={[styles.offerCard, { 
-          transform: [{ scale }],
-          opacity,
-        }]}
-      >
-        {/* Product image as background */}
-        <ImageBackground 
-          source={item.image} 
-          style={styles.cardImage}
-          resizeMode="cover"
-        >
-          {/* Overlay to ensure text is readable */}
-          <View style={styles.cardOverlay} />
-          
-          {/* Product name at bottom */}
-          <Text style={styles.productName}>{item.name}</Text>
-        </ImageBackground>
-        
-        {/* Price badge - positioned absolutely relative to card */}
-        <StarburstBadge 
-          price={item.price} 
-          originalPrice={item.originalPrice}
-          color={item.badgeColor}
-          size={55}
-          style={styles.starburstBadge}
-        />
-      </Animated.View>
-    );
-  };
-
   return (
-    <View style={styles.outerContainer}>
-      <SafeAreaView style={styles.container}>
-        <FlatList
-          style={styles.flatListContainer}
-          contentContainerStyle={styles.contentContainer}
-          showsVerticalScrollIndicator={false}
-          data={[{ key: 'content' }]}
-          renderItem={() => (
+    <SafeAreaProvider>
+      <View style={styles.outerContainer}>
+        {/* Top Navigation Bar - outside SafeAreaView to overlay on orange background */}
+        <TopNavBar />
+        
+        <View style={styles.mainContentContainer}>
+          <FlatList
+            style={styles.flatListContainer}
+            contentContainerStyle={[styles.contentContainer, { paddingBottom: 180 }]} // Further increased padding to prevent content from scrolling behind bottom nav
+            showsVerticalScrollIndicator={false}
+            data={[{ key: 'content' }]}
+            renderItem={() => (
             <View>
-              {/* Lottie animation now inside the scrollable content */}
-              <View style={styles.lottieContainer}>
-                <LottieView
-                  ref={animationRef}
-                  style={styles.lottieAnimation}
-                  source={require('../assets/Hero-lottie.json')}
-                  autoPlay
-                  loop
-                  resizeMode="cover"
-                />
-              </View>
-              <View style={styles.welcomeContainer}>
-                <Text style={styles.welcomeText}>
-                  Welcome to Star Delight!
-                </Text>
-              </View>
-          
-              <View style={styles.offersContainer}>
-                <View style={styles.offersHeader}>
-                  <Text style={styles.offersSectionTitle}>Star Special Offers</Text>
-                  <Text style={styles.viewAllText}>View All</Text>
+              {/* Lottie animation with parent container */}
+              <ImageBackground 
+                source={require('../assets/images/pattern-bg.png')} 
+                style={styles.lottieParentContainer}
+                resizeMode="cover">
+                {/* Faded overlay */}
+                <View style={styles.overlayFade}></View>
+                {/* Greeting display */}
+                <GreetingDisplay userName="Ashish" />
+                <View style={styles.lottieContainer}>
+                  <LottieView
+                    ref={animationRef}
+                    style={styles.lottieAnimation}
+                    source={require('../assets/Hero-lottie.json')}
+                    autoPlay
+                    loop
+                    resizeMode="cover"
+                  />
                 </View>
-                
-                <Animated.ScrollView
-                  horizontal
-                  showsHorizontalScrollIndicator={false}
-                  contentContainerStyle={styles.scrollViewContent}
-                  snapToInterval={CARD_WIDTH + SPACING}
-                  decelerationRate="fast"
-                  onScroll={Animated.event(
-                    [{ nativeEvent: { contentOffset: { x: scrollX } } }],
-                    { useNativeDriver: true }
-                  )}
-                >
-                  {specialOffers.map((item, index) => (
-                    <View key={item.id} style={{ width: CARD_WIDTH, marginRight: SPACING }}>
-                      {renderSpecialOfferItem({ item, index })}
-                    </View>
-                  ))}
-                </Animated.ScrollView>
-                
-                <View style={styles.paginationContainer}>
-                  {specialOffers.map((_, index) => {
-                    const inputRange = [
-                      (index - 1) * (CARD_WIDTH + SPACING),
-                      index * (CARD_WIDTH + SPACING),
-                      (index + 1) * (CARD_WIDTH + SPACING),
-                    ];
-                    
-                    const opacity = scrollX.interpolate({
-                      inputRange,
-                      outputRange: [0.3, 1, 0.3],
-                      extrapolate: 'clamp',
-                    });
-                    
-                    const scale = scrollX.interpolate({
-                      inputRange,
-                      outputRange: [1, 1.3, 1],
-                      extrapolate: 'clamp',
-                    });
-                    
-                    return (
-                      <Animated.View
-                        key={index}
-                        style={[styles.paginationDot, { opacity, transform: [{ scale }] }]}
-                      />
-                    );
-                  })}
-                </View>
-              </View>
+              </ImageBackground>
+              {/* Special Offers Component */}
+              <SpecialOffers specialOffers={specialOffers} />
               {/* Price Banner */}
               <PriceBanner />
               {/* Promotional Banner */}
               <PromotionalBanner />
               {/* Customer Reviews Section */}
               <CustomerReviews />
+              
+              {/* Offers Carousel with Arrow Slider */}
+              <Offers_carousel />
             </View>
-          )}
-        />
-      </SafeAreaView>
-    </View>
+                  )}
+          />
+        </View>
+      
+      <View style={styles.fixedElementsContainer}>
+        {/* Chat with Us Button */}
+        <ChatWithUsButton />
+        
+        {/* Bottom Navigation Bar */}
+        <BottomNavBar />
+      </View>
+      </View>
+    </SafeAreaProvider>
   );
 }
 
@@ -226,19 +148,54 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
   },
-  container: {
+  fixedElementsContainer: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    zIndex: 1000,
+    backgroundColor: '#fff',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 10,
+  },
+  mainContentContainer: {
     flex: 1,
     width: '100%',
-    backgroundColor: '#fff',
+    backgroundColor: '#fff', // Restore white background
+    marginTop: -1, // Remove any gap between nav and content
   },
   flatListContainer: {
     flex: 1,
     width: '100%',
   },
+  lottieParentContainer: {
+    width: '100%',
+    height: 600,
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    paddingTop: 0,
+    position: 'relative',
+    marginTop: 0, // Ensure no gap at the top
+    backgroundColor: '#FF7A00', // Keep orange background only for the lottie section
+  },
+  overlayFade: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(255,255,255,0.4)',
+    zIndex: 1,
+  },
   lottieContainer: {
     width: '100%',
     height: 370,
     overflow: 'hidden',
+    zIndex: 2,
+    position: 'relative',
   },
   lottieAnimation: {
     width: '100%',
@@ -257,81 +214,6 @@ const styles = StyleSheet.create({
     color: '#3b82f6', // blue-500 in Tailwind
     fontWeight: 'bold',
     fontSize: 24,
-  },
-  offersContainer: {
-    width: '100%',
-    paddingVertical: 20,
-  },
-  offersHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-    marginBottom: 15,
-  },
-  offersSectionTitle: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    color: '#1f2937',
-  },
-  viewAllText: {
-    fontSize: 16,
-    color: '#f97316',
-    fontWeight: '600',
-  },
-  scrollViewContent: {
-    paddingLeft: 20,
-    paddingRight: 10,
-  },
-  offerCard: {
-    width: CARD_WIDTH,
-    height: CARD_HEIGHT,
-    borderRadius: 12, // Exactly 12px as requested
-    overflow: 'hidden',
-    elevation: 4,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    position: 'relative',
-  },
-  cardImage: {
-    width: '100%',
-    height: '100%',
-    justifyContent: 'flex-end',
-  },
-  cardOverlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0,0,0,0.2)', // Slight dark overlay for better text visibility
-  },
-  productName: {
-    color: 'white',
-    fontSize: 14,
-    fontWeight: 'bold',
-    padding: 8,
-    textShadowColor: 'rgba(0,0,0,0.75)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 2,
-  },
-  starburstBadge: {
-    position: 'absolute',
-    top: -12,
-    right: -12,
-    zIndex: 999, // Very high z-index to ensure it's above everything
-    elevation: 10, // For Android
-  },
-  paginationContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 15,
-  },
-  paginationDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: '#1f2937',
-    marginHorizontal: 4,
   },
   promoBannerContainer: {
     width: '100%',
