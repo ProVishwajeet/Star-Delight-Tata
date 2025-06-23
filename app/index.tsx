@@ -1,16 +1,18 @@
 import LottieView from 'lottie-react-native';
-import { useEffect, useRef } from 'react';
-import { Dimensions, FlatList, ImageBackground, StyleSheet, View } from "react-native";
-import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import { useEffect, useRef, useState } from 'react';
+import { Animated, Dimensions, FlatList, ImageBackground, NativeScrollEvent, NativeSyntheticEvent, StyleSheet, View } from "react-native";
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import BogoSection from '../components/BogoSection';
 import BottomNavBar from '../components/BottomNavBar';
 import ChatWithUsButton from '../components/ChatWithUsButton';
 import CustomerReviews from '../components/CustomerReviews';
 import GreetingDisplay from '../components/GreetingDisplay';
-import TopNavBar from '../components/TopNavBar';
 import Offers_carousel from '../components/Offers_carousel';
 import PriceBanner from '../components/PriceBanner';
 import PromotionalBanner from '../components/PromotionalBanner';
 import SpecialOffers from '../components/SpecialOffers';
+import TopNavBar from '../components/TopNavBar';
+import UserInfoCards from '../components/UserInfoCards';
 
 const { width } = Dimensions.get('window');
 const CARD_WIDTH = 137; // Exact width as requested
@@ -33,7 +35,7 @@ const specialOffers: OfferItem[] = [
     name: 'Chips',
     price: '₹100',
     originalPrice: '₹110',
-    image: { uri: 'https://images.unsplash.com/photo-1566478989037-eec170784d0b?q=80&w=1000&auto=format&fit=crop' },
+    image: require('../assets/images/Star-special-image1.png'),
     badgeColor: '#4CAF50'
   },
   {
@@ -41,7 +43,7 @@ const specialOffers: OfferItem[] = [
     name: 'Pepsi',
     price: '₹90',
     originalPrice: '₹110',
-    image: { uri: 'https://images.unsplash.com/photo-1629203432180-71e9b18d855c?q=80&w=1000&auto=format&fit=crop' },
+    image: require('../assets/images/Star-special-image2.png'),
     badgeColor: '#4CAF50'
   },
   {
@@ -49,7 +51,7 @@ const specialOffers: OfferItem[] = [
     name: 'Biscuits',
     price: '₹50',
     originalPrice: '₹70',
-    image: { uri: 'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?q=80&w=1000&auto=format&fit=crop' },
+    image: require('../assets/images/Star-special-image1.png'),
     badgeColor: '#4CAF50'
   },
   {
@@ -57,7 +59,7 @@ const specialOffers: OfferItem[] = [
     name: 'Chocolate',
     price: '₹80',
     originalPrice: '₹99',
-    image: { uri: 'https://images.unsplash.com/photo-1511381939415-e44015466834?q=80&w=1000&auto=format&fit=crop' },
+    image: require('../assets/images/Star-special-image2.png'),
     badgeColor: '#4CAF50'
   },
   {
@@ -65,13 +67,23 @@ const specialOffers: OfferItem[] = [
     name: 'Coffee',
     price: '₹120',
     originalPrice: '₹150',
-    image: { uri: 'https://images.unsplash.com/photo-1559056199-641a0ac8b55e?q=80&w=1000&auto=format&fit=crop' },
+    image: require('../assets/images/Star-special-image1.png'),
     badgeColor: '#4CAF50'
   },
 ];
 
 export default function Index() {
   const animationRef = useRef<LottieView>(null);
+  const [scrollY] = useState(new Animated.Value(0));
+  const [navBackgroundOpacity, setNavBackgroundOpacity] = useState(0);
+  
+  const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const offsetY = event.nativeEvent.contentOffset.y;
+    // Calculate opacity based on scroll position
+    // Start showing background after 50px of scrolling, fully opaque at 150px
+    const opacity = Math.min(Math.max((offsetY - 50) / 100, 0), 1);
+    setNavBackgroundOpacity(opacity);
+  };
   
   useEffect(() => {
     // Play the animation when component mounts
@@ -83,8 +95,8 @@ export default function Index() {
   return (
     <SafeAreaProvider>
       <View style={styles.outerContainer}>
-        {/* Top Navigation Bar - outside SafeAreaView to overlay on orange background */}
-        <TopNavBar />
+        {/* Top Navigation Bar with dynamic background opacity */}
+        <TopNavBar backgroundOpacity={navBackgroundOpacity} />
         
         <View style={styles.mainContentContainer}>
           <FlatList
@@ -92,6 +104,11 @@ export default function Index() {
             contentContainerStyle={[styles.contentContainer, { paddingBottom: 180 }]} // Further increased padding to prevent content from scrolling behind bottom nav
             showsVerticalScrollIndicator={false}
             data={[{ key: 'content' }]}
+            onScroll={Animated.event(
+              [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+              { useNativeDriver: false, listener: handleScroll }
+            )}
+            scrollEventThrottle={16}
             renderItem={() => (
             <View>
               {/* Lottie animation with parent container */}
@@ -99,8 +116,7 @@ export default function Index() {
                 source={require('../assets/images/pattern-bg.png')} 
                 style={styles.lottieParentContainer}
                 resizeMode="cover">
-                {/* Faded overlay */}
-                <View style={styles.overlayFade}></View>
+                {/* Pattern background is visible without overlay */}
                 {/* Greeting display */}
                 <GreetingDisplay userName="Ashish" />
                 <View style={styles.lottieContainer}>
@@ -113,6 +129,13 @@ export default function Index() {
                     resizeMode="cover"
                   />
                 </View>
+                {/* User Info Cards - moved here after Lottie animation */}
+                <UserInfoCards savingsAmount="6,352" itemsCount={19} />
+
+                {/* Buy 1 Get 1 Section - Inside orange background */}
+                <View style={styles.bogoSectionContainer}>
+                  <BogoSection />
+                </View>
               </ImageBackground>
               {/* Special Offers Component */}
               <SpecialOffers specialOffers={specialOffers} />
@@ -120,6 +143,7 @@ export default function Index() {
               <PriceBanner />
               {/* Promotional Banner */}
               <PromotionalBanner />
+              
               {/* Customer Reviews Section */}
               <CustomerReviews />
               
@@ -165,7 +189,8 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     backgroundColor: '#fff', // Restore white background
-    marginTop: -1, // Remove any gap between nav and content
+    marginTop: 0, // Remove any gap between nav and content
+    paddingTop: 0, // No padding as TopNavBar is absolutely positioned
   },
   flatListContainer: {
     flex: 1,
@@ -173,13 +198,21 @@ const styles = StyleSheet.create({
   },
   lottieParentContainer: {
     width: '100%',
-    height: 600,
+    height: 1100, // Increased height to accommodate BogoSection
     justifyContent: 'flex-start',
     alignItems: 'center',
     paddingTop: 0,
     position: 'relative',
     marginTop: 0, // Ensure no gap at the top
-    backgroundColor: '#FF7A00', // Keep orange background only for the lottie section
+    backgroundColor: '#FF7A00', 
+  },
+  bogoSectionContainer: {
+    width: '100%',
+    backgroundColor: '#FFFFFF',
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    paddingTop: 24,
+    marginTop: 20,
   },
   overlayFade: {
     position: 'absolute',
@@ -192,10 +225,11 @@ const styles = StyleSheet.create({
   },
   lottieContainer: {
     width: '100%',
-    height: 370,
+    height: 450,
     overflow: 'hidden',
     zIndex: 2,
     position: 'relative',
+    marginTop: 0, // Add margin at the top to create space after greeting text
   },
   lottieAnimation: {
     width: '100%',
@@ -203,6 +237,7 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     paddingBottom: 40, // Add padding at the bottom for better scrolling experience
+    paddingTop: 0, // No top padding as we want content to flow under the transparent TopNavBar
   },
   welcomeContainer: {
     width: '100%',

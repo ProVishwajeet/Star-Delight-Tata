@@ -106,13 +106,14 @@ const GreetingDisplay: React.FC<GreetingDisplayProps> = ({ userName = '' }) => {
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    paddingVertical: 10,
+    paddingVertical: 15,
     paddingHorizontal: 20,
     position: 'absolute',
-    top: 100,
+    top: 140, // Increased to add more space below top nav bar
     left: 0,
     right: 0,
     zIndex: 10,
+    marginBottom: 25, // Add margin at the bottom for spacing with Lottie
   },
   greetingText: {
     fontSize: 24,

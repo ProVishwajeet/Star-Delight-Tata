@@ -11,6 +11,7 @@ interface TopNavBarProps {
   onLocationPress?: () => void;
   nearestStore?: string;
   onStorePress?: () => void;
+  backgroundOpacity?: number;
 }
 
 const TopNavBar: React.FC<TopNavBarProps> = ({
@@ -23,9 +24,10 @@ const TopNavBar: React.FC<TopNavBarProps> = ({
   onLocationPress,
   nearestStore = 'Nearest Store: 4 kms',
   onStorePress,
+  backgroundOpacity = 0,
 }) => {
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: `rgba(255, 122, 0, ${backgroundOpacity})` }]}>
       {/* Top row with logo and icons */}
       <View style={styles.topRow}>
         <View style={styles.logoContainer}>
@@ -72,10 +74,7 @@ const TopNavBar: React.FC<TopNavBarProps> = ({
           </TouchableOpacity>
         </View>
       </View>
-      
-      {/* Separator line */}
-      <View style={styles.separator} />
-      
+            
       {/* Bottom row with location and store info */}
       <View style={styles.bottomRow}>
         <TouchableOpacity style={styles.locationContainer} onPress={onLocationPress}>
@@ -106,6 +105,9 @@ const TopNavBar: React.FC<TopNavBarProps> = ({
           />
         </TouchableOpacity>
       </View>
+      
+      {/* Horizontal separator after location and store */}
+      <View style={styles.horizontalSeparator} />
     </View>
   );
 };
@@ -113,11 +115,14 @@ const TopNavBar: React.FC<TopNavBarProps> = ({
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    backgroundColor: '#FF7A00', // Orange background to match the screenshot
     paddingTop: 40, // Add padding for status bar
     paddingBottom: 10,
     paddingHorizontal: 15,
     zIndex: 10,
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
   },
   topRow: {
     flexDirection: 'row',
@@ -153,23 +158,25 @@ const styles = StyleSheet.create({
     height: 24,
     tintColor: '#FFFFFF', // Make icons white to match design
   },
-  separator: {
+  horizontalSeparator: {
     height: 1,
     backgroundColor: 'rgba(255, 255, 255, 0.3)',
     marginTop: 10,
     marginBottom: 5,
-    marginHorizontal: 0,
+    marginHorizontal: 15,
+    opacity: 0.8,
   },
   bottomRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginTop: 5,
+    marginTop: 10,
     paddingHorizontal: 0,
   },
   locationContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    flex: 1,
   },
   locationIcon: {
     width: 16,
@@ -191,6 +198,8 @@ const styles = StyleSheet.create({
   storeContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    flex: 1,
+    justifyContent: 'flex-end',
   },
   storeIcon: {
     width: 16,
