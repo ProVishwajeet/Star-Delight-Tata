@@ -13,7 +13,7 @@ interface StarburstBadgeProps {
 export const StarburstBadge: React.FC<StarburstBadgeProps> = ({
   price,
   originalPrice,
-  color = '#4CAF50',
+  color = '#FFFFFF',
   size = 50,
   style,
 }) => {
@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   priceText: {
-    color: '#429511', // Green color from the SVG
+    color: '#429511', // Green color for the text
     fontWeight: 'bold',
     fontSize: 14,
     textAlign: 'center',

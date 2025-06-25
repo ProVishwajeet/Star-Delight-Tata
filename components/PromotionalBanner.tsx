@@ -48,14 +48,13 @@ const PromotionalBanner = () => {
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    paddingHorizontal: 24,
-    paddingVertical: 24,
-    marginBottom: 16,
-    alignItems: 'center',
-    backgroundColor: '#FFFFFF',
+    paddingHorizontal: 20,
+    paddingVertical: 30,
+    marginBottom: 0,
+    backgroundColor: 'transparent',
   },
   bannerContainer: {
-    width: 328,
+    width: '100%',
     borderRadius: 12,
     overflow: 'hidden',
     shadowColor: '#000',
@@ -65,8 +64,8 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   bannerImage: {
-    width: 328,
-    height: 162,
+    width: '100%',
+    height: 170,
   },
 });
 

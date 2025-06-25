@@ -7,9 +7,9 @@ import BottomNavBar from '../components/BottomNavBar';
 import ChatWithUsButton from '../components/ChatWithUsButton';
 import CustomerReviews from '../components/CustomerReviews';
 import GreetingDisplay from '../components/GreetingDisplay';
-import Offers_carousel from '../components/Offers_carousel';
 import PriceBanner from '../components/PriceBanner';
 import PromotionalBanner from '../components/PromotionalBanner';
+import ReferAndEarn from '../components/ReferAndEarn';
 import SpecialOffers from '../components/SpecialOffers';
 import TopNavBar from '../components/TopNavBar';
 import UserInfoCards from '../components/UserInfoCards';
@@ -62,14 +62,7 @@ const specialOffers: OfferItem[] = [
     image: require('../assets/images/Star-special-image2.png'),
     badgeColor: '#4CAF50'
   },
-  {
-    id: '5',
-    name: 'Coffee',
-    price: '₹120',
-    originalPrice: '₹150',
-    image: require('../assets/images/Star-special-image1.png'),
-    badgeColor: '#4CAF50'
-  },
+
 ];
 
 export default function Index() {
@@ -113,9 +106,9 @@ export default function Index() {
             <View>
               {/* Lottie animation with parent container */}
               <ImageBackground 
-                source={require('../assets/images/pattern-bg.png')} 
+                source={require('../assets/images/doodle-pattern.png')} 
                 style={styles.lottieParentContainer}
-                resizeMode="cover">
+                resizeMode="contain">
                 {/* Pattern background is visible without overlay */}
                 {/* Greeting display */}
                 <GreetingDisplay userName="Ashish" />
@@ -146,9 +139,9 @@ export default function Index() {
               
               {/* Customer Reviews Section */}
               <CustomerReviews />
-              
-              {/* Offers Carousel with Arrow Slider */}
-              <Offers_carousel />
+
+              {/* Refer & Earn Banner */}
+              <ReferAndEarn />
             </View>
                   )}
           />
@@ -198,12 +191,12 @@ const styles = StyleSheet.create({
   },
   lottieParentContainer: {
     width: '100%',
-    height: 1100, // Increased height to accommodate BogoSection
+    height: 1050, 
     justifyContent: 'flex-start',
     alignItems: 'center',
     paddingTop: 0,
     position: 'relative',
-    marginTop: 0, // Ensure no gap at the top
+    marginTop: 0, 
     backgroundColor: '#FF7A00', 
   },
   bogoSectionContainer: {
@@ -229,7 +222,8 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     zIndex: 2,
     position: 'relative',
-    marginTop: 0, // Add margin at the top to create space after greeting text
+    marginTop: 0,
+    marginBottom: -30, 
   },
   lottieAnimation: {
     width: '100%',

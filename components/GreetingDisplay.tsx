@@ -116,8 +116,9 @@ const styles = StyleSheet.create({
     marginBottom: 25, // Add margin at the bottom for spacing with Lottie
   },
   greetingText: {
-    fontSize: 24,
-    fontWeight: 'bold',
+    fontSize: 26,
+    fontWeight: '400',
+    fontFamily: 'TESCOBL_1',
     color: '#FFFFFF',
     textAlign: 'center',
     textShadowColor: 'rgba(0, 0, 0, 0.75)',

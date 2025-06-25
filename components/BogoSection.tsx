@@ -11,6 +11,7 @@ import {
   View,
   ViewToken,
 } from 'react-native';
+import StaticOfferCards from './StaticOfferCards';
 
 const { width } = Dimensions.get('window');
 const HEADER_PADDING = 12;
@@ -229,25 +230,7 @@ const BogoSection = () => {
       </View>
 
       <View style={styles.cardsContainer}>
-        <Animated.FlatList
-          ref={productListRef}
-          data={sampleProducts}
-          renderItem={renderItem}
-          keyExtractor={(item) => item.id}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          snapToInterval={CARD_WIDTH + CARD_MARGIN}
-          decelerationRate="fast"
-          contentContainerStyle={styles.flatListContent}
-          onViewableItemsChanged={handleProductViewableItemsChanged}
-          viewabilityConfig={viewabilityConfig}
-          initialNumToRender={4}
-          maxToRenderPerBatch={4}
-          windowSize={4}
-          onScroll={handleProductScroll}
-          scrollEventThrottle={16}
-          pagingEnabled={false}
-        />
+        <StaticOfferCards />
       </View>
       
       <View style={styles.buttonBackground}></View>
@@ -295,9 +278,10 @@ const styles = StyleSheet.create({
   headerText: {
     flex: 1,
     textAlign: 'center',
-    fontSize: 24,
-    fontWeight: 'bold',
+    fontSize: 26,
+    fontWeight: '400',
     color: '#232731',
+    fontFamily: 'TESCOBL_1',
   },
   headerArrowBtn: {
     width: 36,
@@ -396,7 +380,7 @@ const styles = StyleSheet.create({
     marginTop: 24,
     width: width - 30,
     paddingVertical: 16,
-    backgroundColor: '#4CAF50',
+    backgroundColor: '#429511',
     borderRadius: 8,
     justifyContent: 'center',
     alignItems: 'center',
@@ -411,7 +395,8 @@ const styles = StyleSheet.create({
   bottomBtnText: {
     color: '#FFFFFF',
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: '700',
+    fontFamily: 'TESCOBL_1',
   },
 });
 

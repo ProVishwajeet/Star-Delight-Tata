@@ -1,12 +1,12 @@
 import React, { useRef } from 'react';
-import { 
-  Animated, 
-  Dimensions, 
+import {
+  Animated,
+  Dimensions,
   ImageBackground,
-  StyleSheet, 
-  Text, 
-  TouchableOpacity, 
-  View 
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View
 } from 'react-native';
 import StarburstBadge from './StarburstBadge';
 
@@ -63,11 +63,7 @@ const SpecialOffers = ({ specialOffers }: SpecialOffersProps) => {
           style={styles.cardImage}
           resizeMode="cover"
         >
-          {/* Overlay to ensure text is readable */}
-          <View style={styles.cardOverlay} />
-          
-          {/* Product name at bottom */}
-          <Text style={styles.productName}>{item.name}</Text>
+          {/* No overlay or product name */}
         </ImageBackground>
         
         {/* Price badge - positioned absolutely relative to card */}
@@ -117,23 +113,27 @@ const SpecialOffers = ({ specialOffers }: SpecialOffersProps) => {
             (index + 1) * (CARD_WIDTH + SPACING),
           ];
           
-          const opacity = scrollX.interpolate({
+          // Determine if this is the active indicator
+          const isActive = scrollX.interpolate({
             inputRange,
-            outputRange: [0.3, 1, 0.3],
-            extrapolate: 'clamp',
-          });
-          
-          const scale = scrollX.interpolate({
-            inputRange,
-            outputRange: [1, 1.3, 1],
+            outputRange: [0, 1, 0],
             extrapolate: 'clamp',
           });
           
           return (
-            <Animated.View
-              key={index}
-              style={[styles.paginationDot, { opacity, transform: [{ scale }] }]}
-            />
+            <View key={index} style={styles.paginationIndicatorWrapper}>
+              <Animated.View
+                style={[
+                  styles.paginationIndicator,
+                  {
+                    backgroundColor: isActive.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: ['#CCCCCC', '#1f2937']
+                    })
+                  }
+                ]}
+              />
+            </View>
           );
         })}
       </View>
@@ -154,15 +154,16 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   offersSectionTitle: {
-    fontSize: 22,
-    fontWeight: 'bold',
+    fontSize: 26,
+    fontWeight: '400',
     color: '#1f2937',
     fontFamily: 'TESCOBL_1',
   },
   viewAllText: {
-    fontSize: 16,
+    fontSize: 18,
     color: '#f97316',
-    fontWeight: '600',
+    fontWeight: '400',
+    fontFamily: 'TESCOBL_1',
   },
   scrollViewContent: {
     paddingLeft: 20,
@@ -173,7 +174,7 @@ const styles = StyleSheet.create({
     height: CARD_HEIGHT,
     borderRadius: 12, // Exactly 12px as requested
     overflow: 'hidden',
-    elevation: 4,
+    elevation: 0,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -211,12 +212,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 15,
   },
-  paginationDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: '#1f2937',
-    marginHorizontal: 4,
+  paginationIndicatorWrapper: {
+    marginHorizontal: 3,
+  },
+  paginationIndicator: {
+    height: 3,
+    width: 18, // Active indicator is longer
+    borderRadius: 1.5,
   },
 });
 

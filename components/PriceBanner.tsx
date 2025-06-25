@@ -1,4 +1,3 @@
-import { AntDesign } from '@expo/vector-icons';
 import React, { useEffect, useRef, useState } from 'react';
 import { Animated, Dimensions, FlatList, Image, StyleSheet, Text, TouchableOpacity, View, ViewToken } from 'react-native';
 
@@ -85,7 +84,11 @@ const PriceBanner = () => {
         viewabilityConfig={{ viewAreaCoveragePercentThreshold: 50 }}
       />
       <TouchableOpacity style={styles.arrowButton} onPress={handleNextPress}>
-        <AntDesign name="arrowright" size={24} color="#fff" />
+        <Image
+          source={require('../assets/images/right-arrow.png')}
+          style={{ width: 18, height: 18 }}
+          resizeMode="contain"
+        />
       </TouchableOpacity>
     </View>
   );
@@ -130,21 +133,22 @@ const styles = StyleSheet.create({
   },
   title: {
     fontFamily: 'TESCOBL_1',
-    fontSize: 26,
+    fontSize: 24,
     fontStyle: 'normal',
-    fontWeight: 'bold',
+    fontWeight: '400',
     lineHeight: 28,
     color: '#333',
+    textTransform: 'uppercase',
   },
   arrowButton: {
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: '#FF7A00',
+    backgroundColor: '#EC6300',
     justifyContent: 'center',
     alignItems: 'center',
     position: 'absolute',
-    right: 10,
+    right: 15,
     top: 35,
     zIndex: 1,
   },

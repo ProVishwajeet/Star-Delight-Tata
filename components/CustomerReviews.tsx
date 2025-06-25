@@ -48,7 +48,7 @@ const reviewData = [
 // Star component for ratings
 const Star = ({ filled }: { filled: boolean }) => (
   <View style={styles.starContainer}>
-    <Svg width="24" height="24" viewBox="0 0 24 24" fill={filled ? "#FFD700" : "none"}>
+    <Svg width="16" height="16" viewBox="0 0 24 24" fill={filled ? "#FFD700" : "none"}>
       <Path
         d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
         fill={filled ? "#FFD700" : "none"}
@@ -173,21 +173,23 @@ const styles = StyleSheet.create({
   container: {
     width: '100%',
     backgroundColor: '#F4F4F4',
-    paddingVertical: 45,
-    marginTop: 16,
+    paddingTop: 45,
+    paddingBottom: 30,
+    marginTop: 6,
     marginBottom: 24,
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     paddingHorizontal: 20,
-    marginBottom: 20,
+    marginBottom: 24,
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
-    color: '#333',
+    fontFamily: 'TESCOBL_1',
+    fontWeight: '400',
+    color: '#232731',
     maxWidth: '60%',
   },
   feedbackButton: {
@@ -195,10 +197,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   feedbackText: {
-    color: '#FF7A00',
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginRight: 4,
+    color: '#EC6300',
+    fontSize: 18,
+    fontFamily: 'TESCOBL_1',
+    fontWeight: '400',
+    marginRight: 0,
   },
   arrowContainer: {
     width: 24,
@@ -217,26 +220,27 @@ const styles = StyleSheet.create({
     padding: 20,
     marginHorizontal: 10,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.08,
+    shadowRadius: 12,
+    elevation: 2,
   },
   reviewHeader: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     marginBottom: 16,
   },
   profileImage: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
+    width: 39,
+    height: 39,
+    borderRadius: 18.5,
     marginRight: 12,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: '#FFB74D',
   },
   profileInitials: {
-    fontSize: 20,
+    fontSize: 16,
     fontWeight: 'bold',
     color: 'white',
   },
@@ -244,34 +248,42 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   userName: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
+    fontSize: 16,
+    fontFamily: 'TescoSpecial, Tesco',
+    fontWeight: '700',
+    color: '#232731',
   },
   userRole: {
     fontSize: 14,
-    color: '#666',
+    fontFamily: 'TescoSpecial, Tesco',
+    fontWeight: '400',
+    color: '#232731',
   },
   quoteContainer: {
     position: 'absolute',
-    right: 16,
-    top: 16,
+    right: 0,
+    top: 0,
+    zIndex: 1,
   },
   quoteImage: {
     width: 46,
     height: 39,
+    resizeMode: 'contain',
   },
   ratingContainer: {
     flexDirection: 'row',
     marginBottom: 12,
+    marginTop: 4,
   },
   starContainer: {
-    marginRight: 4,
+    marginRight: 2,
   },
   reviewText: {
     fontSize: 16,
-    lineHeight: 24,
-    color: '#333',
+    lineHeight: 26,
+    color: '#232731',
+    fontFamily: 'TescoSpecial, Tesco',
+    fontWeight: '400',
   },
   paginationContainer: {
     flexDirection: 'row',
@@ -279,16 +291,16 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   paginationDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: '#ddd',
-    marginHorizontal: 4,
+    width: 14,
+    height: 5,
+    borderRadius: 22,
+    backgroundColor: '#CCCCCC',
+    marginHorizontal: 3,
   },
   activeDot: {
-    width: 24,
-    height: 8,
-    backgroundColor: '#333',
+    width: 16,
+    height: 5,
+    backgroundColor: '#232731',
   },
 });
 

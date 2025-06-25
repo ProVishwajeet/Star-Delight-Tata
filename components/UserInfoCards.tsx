@@ -36,7 +36,7 @@ const UserInfoCards: React.FC<UserInfoCardsProps> = ({
           </View>
           
           <View style={styles.arrowButtonContainer}>
-            <ArrowButton size={32} />
+            <ArrowButton size={42} />
           </View>
         </View>
       </CardContainer>
@@ -59,7 +59,7 @@ const UserInfoCards: React.FC<UserInfoCardsProps> = ({
           </View>
           
           <View style={styles.arrowButtonContainer}>
-            <ArrowButton size={32} />
+            <ArrowButton size={42} />
           </View>
         </View>
       </CardContainer>
@@ -76,12 +76,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingTop: 90,
     paddingBottom: 60,
-    gap: 16,
+    gap: 15,
   },
   card: {
     width: 182,
     height: 160,
-    marginBottom: 20,
+    marginBottom: 0,
   },
   cardContent: {
     width: '100%',
@@ -129,8 +129,8 @@ const styles = StyleSheet.create({
   },
   shoppingListIcon: {
     // todo: fix icon placement
-    width: 90,  // Reduced from 90
-    height: 70, // Reduced from 80
+    width: 90,  
+    height: 70,
     top: 10,
     right: 0,
   },
@@ -139,7 +139,7 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     color: '#333',
     marginTop: -100,
-    marginBottom: 10,
+    marginBottom: 16,
     textAlign: 'center',
     paddingHorizontal: 8,
   },
@@ -149,21 +149,21 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   rupeeSymbol: {
-    fontSize: 16,
+    fontSize: 20,
     fontWeight: '700',
     color: '#EC6300',
     marginRight: 2,
     marginTop: -10,
   },
   amount: {
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: '700',
     color: '#EC6300',
     marginTop: -10,
   },
   savedText: {
-    fontSize: 16,
-    fontWeight: '500',
+    fontSize: 20,
+    fontWeight: '700',
     color: '#EC6300',
     marginTop: -10,
     marginLeft: 5,
@@ -174,21 +174,21 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   itemsCount: {
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: '700',
     color: '#EC6300',
-    marginTop: -10,
+    marginTop: -8,
   },
   itemsText: {
-    fontSize: 16,
-    fontWeight: '500',
+    fontSize: 20,
+    fontWeight: '700',
     color: '#EC6300',
     marginLeft: 5,
-    marginTop: -10,
+    marginTop: -8,
   },
   arrowButtonContainer: {
     position: 'absolute',
-    bottom: -15,
+    bottom: -30,
     alignSelf: 'center',
     zIndex: 1,
   },

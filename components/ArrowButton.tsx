@@ -1,6 +1,6 @@
 import React from 'react';
 import { TouchableOpacity } from 'react-native';
-import Svg, { Path, Defs, ClipPath, ForeignObject } from 'react-native-svg';
+import Svg, { ClipPath, Defs, ForeignObject, Path } from 'react-native-svg';
 
 interface ArrowButtonProps {
   onPress?: () => void;

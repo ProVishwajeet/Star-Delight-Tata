@@ -172,9 +172,9 @@ const styles = StyleSheet.create({
     marginTop: -40,
   },
   centerButton: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
@@ -191,8 +191,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: 2,
-    borderColor: '#FF7A00',
   },
   centerButtonIcon: {
     width: 24,

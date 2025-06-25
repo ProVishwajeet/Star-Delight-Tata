@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
-import { View, Text, StyleSheet, ViewStyle } from 'react-native';
-import Svg, { Path, Defs, ClipPath, ForeignObject } from 'react-native-svg';
+import { StyleSheet, View, ViewStyle } from 'react-native';
+import Svg, { ClipPath, Defs, ForeignObject, Path } from 'react-native-svg';
 
 interface CardContainerProps {
   children: ReactNode;
@@ -14,8 +14,8 @@ const CardContainer: React.FC<CardContainerProps> = ({
   children,
   style,
   variant = 'normal',
-  width = 164,
-  height = 144,
+  width = 194,
+  height = 176,
 }) => {
   return (
     <View style={[styles.container, style]}>
@@ -74,8 +74,8 @@ const CardContainer: React.FC<CardContainerProps> = ({
 const styles = StyleSheet.create({
   container: {
     position: 'relative',
-    width: 164,
-    height: 144,
+    width: 194,
+    height: 176,
     justifyContent: 'center',
     alignItems: 'center',
   },
